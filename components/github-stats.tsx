@@ -42,7 +42,7 @@ export default function GitHubStats({ username }: { username: string }) {
 
   if (loading) {
     return (
-      <Card className="p-6 bg-card border-border/5">
+      <Card className="p-4 sm:p-6 bg-card border-border/5">
         <div className="animate-pulse space-y-4">
           <div className="h-4 bg-muted rounded w-3/4" />
           <div className="h-8 bg-muted rounded" />
@@ -54,7 +54,7 @@ export default function GitHubStats({ username }: { username: string }) {
 
   if (error) {
     return (
-      <Card className="p-6 bg-card border-border/5">
+      <Card className="p-4 sm:p-6 bg-card border-border/5">
         <p className="text-destructive">{error}</p>
       </Card>
     );
@@ -86,30 +86,30 @@ export default function GitHubStats({ username }: { username: string }) {
   };
 
   return (
-    <Card className="p-8 bg-card border-border/5 backdrop-blur-sm">
+    <Card className="p-4 sm:p-6 lg:p-8 bg-card border-border/5 backdrop-blur-sm overflow-hidden">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="space-y-8"
+        className="space-y-6 sm:space-y-8"
       >
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-full bg-primary/10">
-            <GitCommit className="w-5 h-5 text-primary" />
+            <GitCommit className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
           </div>
-          <h3 className="text-xl font-semibold">Contribution Activity</h3>
+          <h3 className="text-lg sm:text-xl font-semibold">Contribution Activity</h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.1 }}
             className="p-4 rounded-lg bg-secondary/50 backdrop-blur-sm"
           >
-            <Calendar className="w-5 h-5 text-primary mb-2" />
+            <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-primary mb-2" />
             <p className="text-sm text-muted-foreground">Current Streak</p>
-            <p className="text-2xl font-bold text-primary">{currentStreak} days</p>
+            <p className="text-xl sm:text-2xl font-bold text-primary">{currentStreak} days</p>
           </motion.div>
 
           <motion.div
@@ -118,9 +118,9 @@ export default function GitHubStats({ username }: { username: string }) {
             transition={{ delay: 0.2 }}
             className="p-4 rounded-lg bg-secondary/50 backdrop-blur-sm"
           >
-            <GitBranch className="w-5 h-5 text-primary mb-2" />
+            <GitBranch className="w-4 h-4 sm:w-5 sm:h-5 text-primary mb-2" />
             <p className="text-sm text-muted-foreground">Total Contributions</p>
-            <p className="text-2xl font-bold">
+            <p className="text-xl sm:text-2xl font-bold">
               {stats.user.totalContributions.toLocaleString()}
             </p>
           </motion.div>
@@ -129,35 +129,37 @@ export default function GitHubStats({ username }: { username: string }) {
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="p-4 rounded-lg bg-secondary/50 backdrop-blur-sm"
+            className="p-4 rounded-lg bg-secondary/50 backdrop-blur-sm sm:col-span-2 lg:col-span-1"
           >
-            <Star className="w-5 h-5 text-primary mb-2" />
+            <Star className="w-4 h-4 sm:w-5 sm:h-5 text-primary mb-2" />
             <p className="text-sm text-muted-foreground">Best Day</p>
-            <p className="text-2xl font-bold">{maxContributions} commits</p>
+            <p className="text-xl sm:text-2xl font-bold">{maxContributions} commits</p>
           </motion.div>
         </div>
 
         <div className="space-y-4">
           <h4 className="text-sm font-medium text-muted-foreground">Last 30 Days</h4>
-          <div className="grid grid-rows-1 grid-flow-col gap-1">
-            {stats.contributions.slice(-30).map((day, index) => (
-              <motion.div
-                key={day.date}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: index * 0.02 }}
-                className="group relative"
-              >
-                <div
-                  className={`h-8 w-8 rounded-sm ${getContributionLevel(day.count)} transition-all duration-200 hover:scale-110`}
-                />
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block">
-                  <div className="bg-popover text-popover-foreground text-xs rounded-md px-2 py-1 whitespace-nowrap">
-                    {day.count} contributions on {new Date(day.date).toLocaleDateString()}
+          <div className="overflow-x-auto pb-4">
+            <div className="grid grid-rows-1 grid-flow-col gap-1 min-w-[600px]">
+              {stats.contributions.slice(-30).map((day, index) => (
+                <motion.div
+                  key={day.date}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: index * 0.02 }}
+                  className="group relative"
+                >
+                  <div
+                    className={`h-6 w-6 sm:h-8 sm:w-8 rounded-sm ${getContributionLevel(day.count)} transition-all duration-200 hover:scale-110`}
+                  />
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10">
+                    <div className="bg-popover text-popover-foreground text-xs rounded-md px-2 py-1 whitespace-nowrap shadow-lg">
+                      {day.count} contributions on {new Date(day.date).toLocaleDateString()}
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </motion.div>
