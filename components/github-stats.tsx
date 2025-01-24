@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Calendar, GitBranch, GitCommit, Star } from "lucide-react";
 import { motion } from "framer-motion";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface GitHubStats {
   user: {
@@ -29,6 +35,7 @@ export default function GitHubStats({ username }: { username: string }) {
         }
         const data = await response.json();
         setStats(data);
+        console.log(data);
       } catch (error) {
         setError("Failed to fetch GitHub stats");
         console.error(error);
@@ -141,24 +148,35 @@ export default function GitHubStats({ username }: { username: string }) {
           <h4 className="text-sm font-medium text-muted-foreground">Last 30 Days</h4>
           <div className="overflow-x-auto pb-4">
             <div className="grid grid-rows-1 grid-flow-col gap-1 min-w-[600px]">
-              {stats.contributions.slice(-30).map((day, index) => (
-                <motion.div
-                  key={day.date}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: index * 0.02 }}
-                  className="group relative"
-                >
-                  <div
-                    className={`h-6 w-6 sm:h-8 sm:w-8 rounded-sm ${getContributionLevel(day.count)} transition-all duration-200 hover:scale-110`}
-                  />
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10">
-                    <div className="bg-popover text-popover-foreground text-xs rounded-md px-2 py-1 whitespace-nowrap shadow-lg">
-                      {day.count} contributions on {new Date(day.date).toLocaleDateString()}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
+              <TooltipProvider>
+                {stats.contributions.slice(-30).map((day, index) => (
+                  <motion.div
+                    key={day.date}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: index * 0.02 }}
+                  >
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <div
+                          className={`h-6 w-6 sm:h-8 sm:w-8 rounded-sm ${getContributionLevel(
+                            day.count
+                          )} transition-all duration-200 hover:scale-110`}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-xs font-semibold text-black">
+                          {day.count} contributions on{" "}
+                          {new Date(day.date).toLocaleDateString(
+                            undefined,
+                            { month: "short", day: "numeric" }
+                          )}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </motion.div>
+                ))}
+              </TooltipProvider>
             </div>
           </div>
         </div>
